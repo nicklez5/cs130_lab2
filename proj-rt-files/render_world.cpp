@@ -25,7 +25,7 @@ Render_World::~Render_World()
 Object* Render_World::Closest_Intersection(const Ray& ray, Hit& hit)
 {
    
-    Object* return_me = NULL;
+    Object *return_me = NULL;
     
     for(size_t i = 0; i < objects.size(); i++){
 	Object* o = objects[i];
@@ -35,6 +35,7 @@ Object* Render_World::Closest_Intersection(const Ray& ray, Hit& hit)
 	std::vector<Hit> empty_hit_vec;
 	o->Intersection(ray, empty_hit_vec);
 	if(empty_hit_vec.empty()){
+		std::cout << "Empty vector\n";
 		return NULL;
 	}
 	int small_t = 9999999;
@@ -42,6 +43,7 @@ Object* Render_World::Closest_Intersection(const Ray& ray, Hit& hit)
 		Hit abc = empty_hit_vec[j];
 		if(abc.t < small_t){
 			small_t = abc.t;
+			//return_me = abc.object;
 			return_me = const_cast<Object*>(abc.object);
 			hit = abc;
 		} 
@@ -76,13 +78,17 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 {
     vec3 color;
     Hit empty_hit;
+   
     Object* closest_obj = Closest_Intersection(ray, empty_hit);
     if(closest_obj != NULL){
-		color = closest_obj->material_shader->Shade_Surface(ray, empty_hit.location, empty_hit.Normal(), recursion_depth);
-				  
+		vec3 intersect_pt = ray.Point(empty_hit.t);
+		std::cout << "Empty hit location:" << intersect_pt << "\n";
+		vec3 normal_1 = closest_obj->Normal(intersect_pt);
+		std::cout << "Empty hit normal:" << normal_1 << "\n";					
+		color = closest_obj->material_shader->Shade_Surface(ray, intersect_pt, normal_1, recursion_depth);
+		std::cout << color << "\n";		  
     }else{
-		vec3 empty_vec = vec3();
-			
+		vec3 empty_vec = vec3();			
 		color = background_shader->Shade_Surface(ray, empty_vec, empty_vec.normalized() , recursion_depth);
 			 
     }

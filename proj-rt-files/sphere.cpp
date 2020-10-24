@@ -6,7 +6,7 @@ void Sphere::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 {
     double gradient = pow(dot(ray.direction,ray.endpoint - center),2.00);
     vec3 random_v = ray.endpoint - center;
-    double normalized_v = gradient - random_v.magnitude_squared() - pow(radius,2.00);
+    double normalized_v = gradient - (random_v.magnitude_squared() - pow(radius,2.00));
     if(normalized_v < 0){
 	std::vector<Hit> _empty;
 	hits = _empty;
