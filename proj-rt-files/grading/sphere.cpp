@@ -4,33 +4,51 @@
 // Determine if the ray intersects with the sphere
 void Sphere::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 {
-    double gradient = pow(dot(ray.direction,ray.endpoint - center),2.00);
+    Hit hit1, hit2;
+    //double gradient = pow(dot(ray.direction,ray.endpoint - center),2.00);
     vec3 random_v = ray.endpoint - center;
-    double normalized_v = gradient - random_v.magnitude_squared() - pow(radius,2.00);
-    if(normalized_v < 0){
+    double a, b , c, t1, t2, root;
+    a = ray.direction.magnitude_squared();
+    b = 2*dot(ray.direction, random_v);
+    c = random_v.magnitude_squared() - (radius*radius);
+    root = (b*b) - (4*a*c);
+    if(root < 0){
 	std::vector<Hit> _empty;
 	hits = _empty;
-    }else if(normalized_v == 0){
-	double first_distance = -(dot(ray.direction, ray.endpoint - center));
-	vec3 t_0 = ray.endpoint + first_distance*ray.direction;
-	Hit _hit; 
-	_hit.t = first_distance;
-	_hit.location = t_0;
-	hits.push_back(_hit); 	
-    }else if(normalized_v > 0){
-	double second_d = -(dot(ray.direction, ray.endpoint - center)) + sqrt(normalized_v);
-	double third_d =  -(dot(ray.direction, ray.endpoint - center)) - sqrt(normalized_v);
-	vec3 t_1 = ray.endpoint + second_d*ray.direction;
-	Hit _hit2;
-	_hit2.t = second_d;
-	_hit2.location = t_1;
-	hits.push_back(_hit2);
-	vec3 t_2 = ray.endpoint + third_d*ray.direction;
-	Hit _hit3;
-	_hit3.t = third_d;
-	_hit3.location = t_2;
-	hits.push_back(_hit3); 
+    }else{
+	t1 = ((-1)*b + sqrt(root))/(2*a); //Large
+	t2 = ((-1)*b - sqrt(root))/(2*a); //Small
+	if(t1 == t2){
+		vec3 distance_0 = ray.endpoint + ray.direction * t1;
+		hit1.t = t1;
+		hit1.location = distance_0; 	
+		hit1.object = this;
+		hit1.ray_exiting = false;
+		hits.push_back(hit1);
+	}else if((t1 > 0) && (t2 > 0)){
+		vec3 distance_1 = ray.endpoint + ray.direction * t1;
+		vec3 distance_2 = ray.endpoint + ray.direction * t2;
+		hit1.t = t1;
+		hit1.location = distance_1;
+		hit1.object = this;
+		hit1.ray_exiting = false;
+		hits.push_back(hit1);
+		hit2.t = t2;
+		hit2.location = distance_2;
+		hit2.object = this;
+		hit2.ray_exiting = true;
+		hits.push_back(hit2);
+	}else if((t1 < 0) && (t2 > 0)){
+		vec3 distance_1 = ray.endpoint + ray.direction * t2;
+		hit1.t = t2;
+		hit1.location = distance_1;
+		hit1.object = this;
+		hit1.ray_exiting = true;
+		hits.push_back(hit1); 
+	}
+	
     }
+    
      
 	 
 }

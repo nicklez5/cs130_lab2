@@ -12,8 +12,10 @@ Intersection(const Ray& ray, std::vector<Hit>& hits) const
 		vec3 lhs = x1 - ray.endpoint;
 		if(dot(lhs,normal) == 0){
 			Hit new_hit3;
+			new_hit3.object = this; 
 			new_hit3.t = 0;
 			new_hit3.location = ray.endpoint;
+			new_hit3.ray_exiting = false;
 			hits.push_back(new_hit3);
 		}
     }else{
@@ -23,8 +25,10 @@ Intersection(const Ray& ray, std::vector<Hit>& hits) const
 	double d = top_dot/bot_dot;
 	vec3 point_intersect = ray.endpoint + d*ray.direction;
 	Hit new_hit4;
+	new_hit4.object = this;
 	new_hit4.t = d;
 	new_hit4.location = point_intersect;
+	new_hit4.ray_exiting = true;
 	hits.push_back(new_hit4);	
     }
 		
