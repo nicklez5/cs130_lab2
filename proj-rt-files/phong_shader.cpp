@@ -10,6 +10,7 @@ vec3 Phong_Shader::
 Shade_Surface(const Ray& ray,const vec3& intersection_point,
     const vec3& normal,int recursion_depth) const
 {
+    /*
     vec3 light_dest;
     vec3 right_dest;
     vec3 shadow_dest;
@@ -36,9 +37,44 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 		right_dest = -light_dest + 2*(dot(light_dest,normal))*normal;
 		color += color_specular*da_light->Emitted_Light(light_dest)*std::pow(std::max(dot(-ray.direction,right_dest.normalized()),0.0),specular_power); 
 	}
+    } 
+    
+    */
+    vec3 l;
+    vec3 right;
+    vec3 color = color_ambient*world.ambient_color*world.ambient_intensity;	
+    for(size_t i = 0; i < world.lights.size(); i++){
+ 	l = world.lights.at(i)->position - intersection_point;
+	if(world.enable_shadows){		
+		Ray ray_1(intersection_point, l);
+		Hit shadow_hit = {};
+		if(world.Closest_Intersection(ray_1, shadow_hit)){
+			if(shadow_hit.t < l.magnitude())
+				continue;
+		}
+		   
+	}
+	right = (2*dot(l,normal) * normal - l).normalized();
+	vec3 l_color = world.lights.at(i)->Emitted_Light(l.normalized())/(l.magnitude_squared());
+	double diffuse_intensity = std::max(0.0, dot(l.normalized(),normal));
+	double spec_intensity = pow(std::max(0.0,dot(right,(ray.endpoint - intersection_point).normalized())),specular_power);
+	color = l_color * (color_diffuse * diffuse_intensity + color_specular * spec_intensity) + color;
+	/* 
+	vec3 diffuse = color_diffuse*world.lights[i]->Emitted_Light(l)*(std::max(dot(normal,l.normalized()),0.0));
+	right = (2*(dot(l,normal))*normal - l).normalized();
+	vec3 specular = color_specular*world.lights[i]->Emitted_Light(l)*(std::max(std::pow(dot(-ray.direction,right.normalized()),specular_power),0.0));
+	if(dot(-ray.direction, right.normalized()) < 0){
+		color += diffuse;
+	}else{
+		color += diffuse;
+		color += specular;
+	}
+        */
+
     }
     
-    /*
+    /* 
+    vec3 color = color_ambient*world.ambient_color*world.ambient_intensity; 
     for(size_t xyz = 0; xyz < world.lights.size(); xyz++){
 	Ray ray_1(intersection_point, world.lights[xyz]->position.normalized());
 	vec3 light;
@@ -56,7 +92,9 @@ Shade_Surface(const Ray& ray,const vec3& intersection_point,
 	vec3 spec = color_specular*l_color*std::pow(std::max(dot(r,-ray_1.direction.normalized()),0.0),specular_power);
 	color += diffuse_me+spec;
     }
-     //determine the color
     */
+     //determine the color
+    
+    
     return color;
 }
