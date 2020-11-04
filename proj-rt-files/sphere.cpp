@@ -15,36 +15,56 @@ void Sphere::Intersection(const Ray& ray, std::vector<Hit>& hits) const
     if(root < 0){
 	std::vector<Hit> _empty;
 	hits = _empty;
+    }else if(root == 0){
+	t1 = ((-1)*b + sqrt(root))/(2*a); // Large
+	t2 = ((-1)*b - sqrt(root))/(2*a); // Small
+	vec3 distance_0 = ray.endpoint + ray.direction * t1;
+	hit1.t = t1;
+	hit1.location = distance_0;
+	hit1.object = this;
+	hit1.ray_exiting = true;
+	hits.push_back(hit1); 	
     }else{
 	t1 = ((-1)*b + sqrt(root))/(2*a); //Large
 	t2 = ((-1)*b - sqrt(root))/(2*a); //Small
-	if(t1 == t2){
-		vec3 distance_0 = ray.endpoint + ray.direction * t1;
-		hit1.t = t1;
-		hit1.location = distance_0; 	
-		hit1.object = this;
-		hit1.ray_exiting = false;
-		hits.push_back(hit1);
-	}else if((t1 > 0) && (t2 > 0)){
-		vec3 distance_1 = ray.endpoint + ray.direction * t1;
-		vec3 distance_2 = ray.endpoint + ray.direction * t2;
+	vec3 distance_1 = ray.endpoint + ray.direction * t1;
+	vec3 distance_2 = ray.endpoint + ray.direction * t2;
+	if((t1 > 0) && (t2 > 0)){
 		hit1.t = t1;
 		hit1.location = distance_1;
 		hit1.object = this;
 		hit1.ray_exiting = false;
 		hits.push_back(hit1);
+
 		hit2.t = t2;
 		hit2.location = distance_2;
 		hit2.object = this;
 		hit2.ray_exiting = true;
 		hits.push_back(hit2);
 	}else if((t1 < 0) && (t2 > 0)){
-		vec3 distance_1 = ray.endpoint + ray.direction * t2;
-		hit1.t = t2;
+		hit1.t = t1;
 		hit1.location = distance_1;
 		hit1.object = this;
-		hit1.ray_exiting = true;
-		hits.push_back(hit1); 
+		hit1.ray_exiting = false;
+		hits.push_back(hit1);
+		
+		hit2.t = t2;
+		hit2.location = distance_2;
+		hit2.object = this;
+		hit2.ray_exiting = true;
+		hits.push_back(hit2); 
+	}else if((t1 < 0) && (t2 < 0)){
+		hit1.t = t1;
+		hit1.location = distance_1;
+		hit1.object = this;
+		hit1.ray_exiting = false;
+		hits.push_back(hit1);
+
+		hit2.t = t2;
+		hit2.location = distance_2;
+		hit2.object = this;
+		hit2.ray_exiting = true;
+		hits.push_back(hit2);		
 	}
 	
     }

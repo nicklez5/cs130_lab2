@@ -7,7 +7,8 @@
 // to record a hit with t=0 as the first entry in hits.
 void Plane::
 Intersection(const Ray& ray, std::vector<Hit>& hits) const
-{
+{	
+
     if(dot(ray.direction, normal) == 0){
 		vec3 lhs = x1 - ray.endpoint;
 		if(dot(lhs,normal) == 0){
@@ -32,7 +33,7 @@ Intersection(const Ray& ray, std::vector<Hit>& hits) const
 	hits.push_back(new_hit4);	
     }
 		
-      
+     
 }
 
 vec3 Plane::

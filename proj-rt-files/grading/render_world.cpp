@@ -26,7 +26,7 @@ Object* Render_World::Closest_Intersection(const Ray& ray, Hit& hit)
 {
    
     Object *return_me = NULL;
-    
+    double min_t = std::numeric_limits<double>::max();    
     for(size_t i = 0; i < objects.size(); i++){
 	Object* o = objects[i];
 	if(o == NULL){
@@ -38,11 +38,10 @@ Object* Render_World::Closest_Intersection(const Ray& ray, Hit& hit)
 		//std::cout << "Empty vector\n";
 		return NULL;
 	}
-	int small_t = 9999999;
 	for(size_t j = 0; j < empty_hit_vec.size(); j++){
 		Hit abc = empty_hit_vec[j];
-		if(abc.t < small_t){
-			small_t = abc.t;
+		if(abc.t < min_t && abc.t > small_t){
+			min_t = abc.t;
 			//return_me = abc.object;
 			return_me = const_cast<Object*>(abc.object);
 			hit = abc;
@@ -57,10 +56,10 @@ Object* Render_World::Closest_Intersection(const Ray& ray, Hit& hit)
 void Render_World::Render_Pixel(const ivec2& pixel_index)
 {
    
-    vec3 result_vec = camera.World_Position(pixel_index);
-    result_vec = result_vec - camera.position;
+    vec3 result_vec = this->camera.World_Position(pixel_index);
+    result_vec = result_vec - this->camera.position;
      
-    Ray ray(camera.position, result_vec.normalized());
+    Ray ray(this->camera.position, result_vec.normalized());
     vec3 color=Cast_Ray(ray,1);
     camera.Set_Pixel(pixel_index,Pixel_Color(color));
 }
@@ -81,12 +80,10 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
    
     Object* closest_obj = Closest_Intersection(ray, empty_hit);
     if(closest_obj != NULL){
-		vec3 intersect_pt = ray.Point(empty_hit.t);
-		//std::cout << "Empty hit location:" << intersect_pt << "\n";
+		vec3 intersect_pt = ray.Point(empty_hit.t);	
 		vec3 normal_1 = closest_obj->Normal(intersect_pt);
-		//std::cout << "Empty hit normal:" << normal_1 << "\n";					
+									
 		color = closest_obj->material_shader->Shade_Surface(ray, intersect_pt, normal_1, recursion_depth);
-		//std::cout << color << "\n";		  
     }else{
 		vec3 empty_vec = vec3();			
 		color = background_shader->Shade_Surface(ray, empty_vec, empty_vec.normalized() , recursion_depth);
