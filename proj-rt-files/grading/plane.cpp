@@ -8,7 +8,7 @@
 void Plane::
 Intersection(const Ray& ray, std::vector<Hit>& hits) const
 {	
-
+    
     if(dot(ray.direction, normal) == 0){
 		vec3 lhs = x1 - ray.endpoint;
 		if(dot(lhs,normal) == 0){
@@ -24,16 +24,34 @@ Intersection(const Ray& ray, std::vector<Hit>& hits) const
 	double top_dot = dot(left_side,normal);
 	double bot_dot = dot(ray.direction, normal);
 	double d = top_dot/bot_dot;
-	vec3 point_intersect = ray.endpoint + d*ray.direction;
+	//vec3 point_intersect = ray.endpoint + d*ray.direction;
 	Hit new_hit4;
 	new_hit4.object = this;
 	new_hit4.t = d;
-	new_hit4.location = point_intersect;
-	new_hit4.ray_exiting = true;
+	new_hit4.location = ray.Point(d);
+	new_hit4.ray_exiting = false;
 	hits.push_back(new_hit4);	
     }
-		
-     
+    /*		
+	vec3 xyz = (x1 - ray.endpoint);
+	double top = dot(normal,xyz);
+	double bot = dot(normal, ray.direction);
+	if(bot == 0){
+		return;
+	}else{
+		double _t = top/bot;
+		if(_t > small_t){
+			Hit new_hit4;
+			new_hit4.object = this;
+			new_hit4.t = _t;
+			new_hit4.location = ray.Point(_t);
+			new_hit4.rotation = mat3::id();
+			new_hit4.ray_exiting = false;
+			hits.push_back(new_hit4);	
+		}
+	}     
+    */
+	
 }
 
 vec3 Plane::

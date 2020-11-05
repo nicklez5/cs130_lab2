@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <limits>
+#include <string>
 #include "camera.h"
 #include "hit.h"
 

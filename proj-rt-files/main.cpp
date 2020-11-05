@@ -95,7 +95,7 @@ int main(int argc, char** argv)
         // Set a global variable to indicate that we are debugging one pixel.
         // This way you can do: if(debug_pixel) cout<<lots<<of<<stuff<<here<<endl;
         debug_pixel = true;
-
+	std::cout << "debug pixel: x = " << test_x << "; y = " << test_y << std::endl;
         // Render just the pixel we are debugging
         world.Render_Pixel(ivec2(test_x,test_y));
 
