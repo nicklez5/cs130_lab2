@@ -18,6 +18,7 @@ Torus::~Torus()
 // Determine if the ray intersects with the torus
 void Torus::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 {
+	
     TODO;
 }
 

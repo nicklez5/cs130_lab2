@@ -80,7 +80,7 @@ void Render_World::Render_Pixel(const ivec2& pixel_index)
     vec3 result_vec = this->camera.World_Position(pixel_index);
     result_vec = result_vec - this->camera.position;
      
-    Ray ray(this->camera.position, result_vec.normalized());
+    Ray ray(this->camera.position, result_vec);
     vec3 color=Cast_Ray(ray,1);
     camera.Set_Pixel(pixel_index,Pixel_Color(color));
 }
@@ -106,7 +106,7 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
     if(closest_obj != NULL){
 		vec3 intersect_pt = ray.Point(empty_hit.t);	
 		vec3 normal_1 = closest_obj->Normal(intersect_pt);
-									
+	 			
 		color = closest_obj->material_shader->Shade_Surface(ray, intersect_pt, normal_1, recursion_depth);
     }else{
 		vec3 empty_vec = vec3();			
