@@ -5,19 +5,72 @@
 void Sphere::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 {
     Hit hit1, hit2;
-    //double gradient = pow(dot(ray.direction,ray.endpoint - center),2.00);
     vec3 random_v = ray.endpoint - center;
     double a, b , c, t2, t1, root;
     a = ray.direction.magnitude_squared();
+    b = 2*(dot(ray.direction,random_v));
+    c = random_v.magnitude_squared() - pow(radius,2);
+    root = pow(b,2) - (4*a*c);
+    t2 = (-b + (sqrt(root)))/(2*a);
+    t1 = (-b - (sqrt(root)))/(2*a);
+
+    if(root < 0){
+	std::vector<Hit> empty_hits;
+	hits = empty_hits;
+    }else if(root == 0){
+	
+	hit1.t = -b/(2*a);
+	hit1.location =	ray.endpoint + (ray.direction * hit1.t);
+	hit1.object = this;
+	hit1.ray_exiting = false;
+	hits.push_back(hit1);
+
+	hit2.t = -b/(2*a);
+	hit2.location = ray.endpoint + (ray.direction * hit2.t);
+	hit2.object = this;
+	hit2.ray_exiting = true;
+	hits.push_back(hit2);
+    }else{
+	if((t2 < 0) && (t2 >= t1)){
+		
+	}else if((t2 >= 0) && (t1 < 0)){
+		hit1.t = 0;
+		hit1.location = ray.endpoint + (ray.direction * hit1.t);
+		hit1.object = this;
+		hit1.ray_exiting = false;
+		hits.push_back(hit1);
+
+		hit2.t = t2;
+		hit2.location = ray.endpoint + (ray.direction * hit2.t);
+		hit2.object = this;
+		hit2.ray_exiting = true;
+		hits.push_back(hit2);
+	}else if((t2 >= t1) && (t1 >= 0)){
+		hit1.t = t1;
+		hit1.location = ray.endpoint + (ray.direction * hit1.t);
+		hit1.object = this;
+		hit1.ray_exiting = false;
+		hits.push_back(hit1);
+		
+		hit2.t = t2;
+		hit2.location = ray.endpoint + (ray.direction * hit2.t);
+		hit2.object = this;
+		hit2.ray_exiting = true;
+		hits.push_back(hit2);
+	}
+    }
+
+
+    /*
+    a = ray.direction.magnitude_squared();
     b = 2*dot(ray.direction, random_v);
-    c = random_v.magnitude_squared() - (radius * radius);
-    root = (b*b) - (4*a*c);
+    c = random_v.magnitude_squared() - (pow(radius,2));
+    root = pow(b,2) - (4*a*c);
     if(root < 0){
 	    std::vector<Hit> _empty;
 	    hits = _empty;
     }else if(root == 0){
-	    t1 = ((-1)*b + sqrt(root))/(2*a);
-	    t2 = ((-1)*b - sqrt(root))/(2*a);
+	    t1 = -(b)/(2*a);
 	    vec3 distance_0 = ray.endpoint + ray.direction * t1;
 	    hit1.t = t1;
 	    hit1.location = distance_0;
@@ -61,7 +114,7 @@ void Sphere::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 	
     }
     
-	
+    */	
     
     
     
@@ -71,7 +124,7 @@ void Sphere::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 
 vec3 Sphere::Normal(const vec3& point) const
 {
-    vec3 normal = point - center;
+    vec3 normal = point - this->center;
     return normal.normalized();
 }
 

@@ -32,15 +32,12 @@ Object* Render_World::Closest_Intersection(const Ray& ray, Hit& hit)
     int random_string = 0;    
     for(; i < objects.size(); i++){
 	Object* o = objects[i];
-	if(o == NULL){
-		//std::cout << "Empty object\n";
-	}
 	std::vector<Hit> empty_hit_vec;
 	o->Intersection(ray, empty_hit_vec);
 	
 	if(empty_hit_vec.empty()){
-		//std::cout << "Empty vector\n";
-		return NULL;
+		continue;
+		
 	}
  	if(debug_pixel){
 		random_string = static_cast<int>(i);
@@ -97,6 +94,7 @@ void Render_World::Render()
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 {
     vec3 color;
+    vec3 empty_vec;
     Hit empty_hit;
     if(debug_pixel){ 	
 	std::cout << "cast ray: end = " << ray.endpoint << "; dir = " << ray.direction << std::endl;
@@ -106,7 +104,6 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
     if(closest_obj != NULL){
 		vec3 intersect_pt = ray.Point(empty_hit.t);	
 		vec3 normal_1 = closest_obj->Normal(intersect_pt);
-	 			
 		color = closest_obj->material_shader->Shade_Surface(ray, intersect_pt, normal_1, recursion_depth);
     }else{
 		vec3 empty_vec = vec3();			

@@ -56,7 +56,8 @@ Intersection(const Ray& ray, std::vector<Hit>& hits) const
 
 vec3 Plane::
 Normal(const vec3& point) const
-{ 
+{
+    
     return this->normal;
 }
 
