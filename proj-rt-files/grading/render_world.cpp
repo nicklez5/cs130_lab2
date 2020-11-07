@@ -46,12 +46,16 @@ Object* Render_World::Closest_Intersection(const Ray& ray, Hit& hit)
 	for(size_t j = 0; j < empty_hit_vec.size(); j++){
 		Hit abc = empty_hit_vec[j];
 		if(debug_pixel){
-			std::cout << " { obj[" << random_string << "], "  << abc.t << ", " << abc.ray_exiting << "}";
-			if(j+1 != empty_hit_vec.size()){
-				std::cout << ",";
+			if(abc.t <= small_t){
+				std::cout << "}" << std::endl;
 			}else{
-				std::cout << " }" << std::endl;
-			} 
+				std::cout << " { obj[" << random_string << "], "  << abc.t << ", " << abc.ray_exiting << "}";
+				if(j+1 != empty_hit_vec.size()){
+					std::cout << ",";
+				}else{
+					std::cout << " }" << std::endl;
+				}
+			}	
 				
 		}
 		if(abc.t < min_t && abc.t > small_t){
@@ -94,19 +98,21 @@ void Render_World::Render()
 vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
 {
     vec3 color;
-    vec3 empty_vec;
+    vec3 empty_vec = vec3();
     Hit empty_hit;
     if(debug_pixel){ 	
 	std::cout << "cast ray: end = " << ray.endpoint << "; dir = " << ray.direction << std::endl;
  		
     } 
+    if(recursion_depth > recursion_depth_limit){
+	return background_shader->Shade_Surface(ray,empty_vec, empty_vec.normalized(), 1);
+    }
     Object* closest_obj = Closest_Intersection(ray, empty_hit);
     if(closest_obj != NULL){
 		vec3 intersect_pt = ray.Point(empty_hit.t);	
 		vec3 normal_1 = closest_obj->Normal(intersect_pt);
 		color = closest_obj->material_shader->Shade_Surface(ray, intersect_pt, normal_1, recursion_depth);
-    }else{
-		vec3 empty_vec = vec3();			
+    }else{			
 		color = background_shader->Shade_Surface(ray, empty_vec, empty_vec.normalized() , recursion_depth);
 			 
     }

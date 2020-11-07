@@ -2,6 +2,8 @@
 #define __BOOLEAN_H__
 
 #include "object.h"
+#include <vector>
+#include <set>
 class Boolean : public Object
 {
 public:

@@ -34,12 +34,13 @@ void Sphere::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 	if((t2 < 0) && (t2 >= t1)){
 		
 	}else if((t2 >= 0) && (t1 < 0)){
+		
 		hit1.t = 0;
 		hit1.location = ray.endpoint + (ray.direction * hit1.t);
 		hit1.object = this;
 		hit1.ray_exiting = false;
 		hits.push_back(hit1);
-
+		
 		hit2.t = t2;
 		hit2.location = ray.endpoint + (ray.direction * hit2.t);
 		hit2.object = this;

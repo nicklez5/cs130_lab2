@@ -30,7 +30,8 @@ Intersection(const Ray& ray, std::vector<Hit>& hits) const
 	new_hit4.t = d;
 	new_hit4.location = ray.Point(d);
 	new_hit4.ray_exiting = false;
-	hits.push_back(new_hit4);	
+	hits.push_back(new_hit4);
+	// hits.push_back(new_hit4);	
     }
     /*		
 	vec3 xyz = (x1 - ray.endpoint);

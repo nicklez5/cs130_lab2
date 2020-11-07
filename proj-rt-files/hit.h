@@ -39,6 +39,17 @@ struct Hit
     // for an intersection should call this routine rather than calling the
     // Normal routine on objects directly.
     vec3 Normal() const;
+
+    bool operator<(const Hit &rhs)const{
+	return this->t<rhs.t;	
+	
+    }
+    bool operator()(const Hit &rhs){
+	if(this->t == rhs.t){
+		return true;
+	}	
+	return false;
+    }
 };
 
 #endif
