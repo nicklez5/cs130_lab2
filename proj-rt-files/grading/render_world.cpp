@@ -41,7 +41,6 @@ Object* Render_World::Closest_Intersection(const Ray& ray, Hit& hit)
 		
 	}
  	if(debug_pixel){
-		std::cout << " was i here " << std::endl;
 		random_string = static_cast<int>(i);
 		std::cout << "intersect test with obj[" << random_string << "]: hits = { ";
 	}	
@@ -116,9 +115,6 @@ vec3 Render_World::Cast_Ray(const Ray& ray,int recursion_depth)
     if(closest_obj != NULL){
 		vec3 intersect_pt = ray.Point(empty_hit.t);	
 		vec3 normal_1 = empty_hit.object->Normal(intersect_pt);
-		if(closest_obj->material_shader == NULL){
-			std::cout << "Empty material shader" << std::endl;
-		}
 		color = closest_obj->material_shader->Shade_Surface(ray, intersect_pt, normal_1, recursion_depth);
     }else{			
 		color = background_shader->Shade_Surface(ray, empty_vec, empty_vec.normalized() , recursion_depth);

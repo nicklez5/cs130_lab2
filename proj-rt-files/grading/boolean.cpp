@@ -36,6 +36,7 @@ void Boolean::Intersection(const Ray& ray, std::vector<Hit>& hits) const
     std::set<Hit> total_AB;
     std::set<Hit> intersecting_AB;
     std::set<Hit> union_AB;
+    std::set<Hit> diff_AB;
     bool inside_A = false;
     bool inside_B = false;
     for(size_t i = 0; i < hits_A.size(); i++){
@@ -60,7 +61,8 @@ void Boolean::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 			if(inside_B){
 				intersecting_AB.insert(xyz3);
 			}else{
-				union_AB.insert(xyz3);	
+				union_AB.insert(xyz3);
+				diff_AB.insert(xyz3);	
 			}
 		}else{
 			inside_A = true;
@@ -75,6 +77,7 @@ void Boolean::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 			inside_B = false;
 			if(inside_A){
 				intersecting_AB.insert(xyz3);
+				diff_AB.insert(xyz3);
 			}else{
 				union_AB.insert(xyz3);
 			}
@@ -95,6 +98,10 @@ void Boolean::Intersection(const Ray& ray, std::vector<Hit>& hits) const
     if(type_index == 0){
 	std::vector<Hit> v(intersecting_AB.begin(), intersecting_AB.end());
 	hits = v;
+    }else if(type_index == 1){
+	std::vector<Hit> v(diff_AB.begin(), diff_AB.end());
+	hits = v;
+ 
     }else if(type_index == 2){
         std::vector<Hit> v(union_AB.begin(), union_AB.end());
 	hits = v;
@@ -168,6 +175,26 @@ void Boolean::Intersection(const Ray& ray, std::vector<Hit>& hits) const
 		}
 	        
 			
+	}
+	int index_diff_AB = 0;
+	std::set<Hit>::iterator itr4 = diff_AB.begin();
+	std::cout << "Intersect test with diff obj[" << index_diff_AB << "]: hits = {";
+	while(itr4 != diff_AB.end()){
+		Hit xyz_4 = (*itr4);
+		set_A_itr = sorted_A.find(xyz_4);
+		if(set_A_itr != sorted_A.end()){
+			std::cout << " {obj[" << index_diff_AB << "]->A, " << xyz_4.t << ", " << xyz_4.ray_exiting << "}";
+		}
+		set_B_itr = sorted_B.find(xyz_4);
+		if(set_B_itr != sorted_B.end()){
+			std::cout << " {obj[" << index_diff_AB << "]->B, " << xyz_4.t << ", " << xyz_4.ray_exiting << "}";
+		}
+		itr4++;
+		if(itr4 == diff_AB.end()){
+			std::cout << " }" << std::endl;
+		}else{
+			std::cout << ", ";
+		}
 	}
 
     }
